@@ -228,9 +228,3 @@
 <br><br><br>
 
 
-# User Test
-- [📄 Knock_설문조사응답 바로가기](https://docs.google.com/spreadsheets/d/1VkckXfRz1ukOFfBA3SHJD-oMWbFlo2dhDR_gOvEHvgw/edit?usp=sharing)
-  <br>
-
-
-![header](https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text=Thank%20you%20for%20watching&fontSize=50)
