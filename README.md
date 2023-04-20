@@ -212,18 +212,7 @@
 </details>
 
 
-<details>
-<summary> Log </summary>
-<div markdown="1">
-    <br>
-   - 문제 상황 : <br>
-   - 원인 : <br>
-   - 해결 : <br>
-    👉 
 
-
-</div>
-</details>
 
 <br><br><br>
 
