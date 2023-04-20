@@ -15,7 +15,7 @@
 <b>1. Search</b>
 - #동료에게물어보기힘든것 #내가놓친것
 - 고민하지 말고 Knock에 물어보자!
-- 가중치, 중요도 계산으로 연관성이 높은 게시글이 검색 돼요!
+- 헝태소 분석과 중요도 계산으로 연관성이 높은 게시글이 빠르게 검색 돼요!
 
 <b>2. Security</b>
 - #사내문서 #보안이생명
@@ -24,8 +24,8 @@
 
 <b>3. Community</b>
 - 카테고리를 나누어, 용도별로 관리해요!
-- #오늘의점심 #직장내소모임 #수평적문화 #12기공채친목
-- 소통이 활발한 사내분위기를 만들어요!
+- 게시글의 편집 상태를 확인할 수 있고, 동료가 편집이 끝나면 알림을 받을 수 있어요.
+- 댓글과 편집 로그를 통해 소통이 활발한 사내분위기를 만들어요!
 
 <b>4. D.I.Y</b>
 - #내가원하는대로 #내맘대로 #다꾸아닌문꾸
@@ -48,7 +48,7 @@
 
 # 프로젝트 세부사항
 - ### 구현 영상<br>
-  - [최종 발표영상 or ppt 영상 추가예정]() <br>
+  - [최종 발표영상 📷](https://www.youtube.com/watch?v=8PyelCFdVgQ) <br>
 - ###  구현목표
   - 검색 성능 : 형태소 분석을 통한 정확하고 빠른 검색 결과 제공
   - 편집상태 알림 : 게시글의 편집상태를 보여주고, 편집이 완료되면 알림 제공
@@ -135,42 +135,55 @@
 | ![관리자](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FE4V5x%2FbtsamXGbUiJ%2F9cZBLjXNvOFt3uNlS4DUg1%2Fimg.png) | ![댓글로그](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FySs8E%2FbtsajdpKFK6%2FIi09fic5HemPuNjvb32Vs1%2Fimg.png) |
 |- 직원의 직급 및 권한 관리<br> - 사내 게시글의 카테고리 등록 및 관리<br> |- 댓글로 커뮤니티 기능 <br> - 로그를 통해 이전과 이후 게시글 비교 가능 <br> |
 
-[📷 시연영상 바로가기 - 추가 예정](https://www.notion.so/Knock-a9dbba271c2645559d9a1d965357e146)
-
 <br><br>
 
 
 # Trouble Shooting
 
+💡 자세한 사항과 수치 및 통계자료는 토글 아래 링크를 통해 확인해 주세요. <br>
+<br>
 <details>
 <summary> 검색 성능 개선</summary>
 <div markdown="1">  
+
 <br>
- (1) 검색 성능 문제와 원인, 개선 방향 <br>
-    - 문제 : 실행환경(local과 ec2 서버 등)에 따라 속도와 성능의 차이가 많이 남. <br>
-    - 원인 : 라이브러리의 비효울적인 사용, 불필요한 쿼리 <br>
-    - 개선 방향 : 쿼리를 개선한 후, Jmeter 부하테스트를 통해 향상된 성능을 측정해 나감.<br>
-    👉 https://www.notion.so/STEP1-fad9129c662e44859f1ff7d4df0dd75f
+
+(1) [STEP1]&nbsp; 검색 성능 문제와 원인 분석, 개선방향 <br>
+- 문제 : 실행환경(Local, EC2 서버 등)에 따라 속도와 성능 차이가 큼. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;검색 조회, 특히 키워드 검색 부분의 속도가 현저히 느림. <br>
+- 원인 : 라이브러리의 비효율적인 사용, 불필요한 쿼리
+- 개선방향 : Jmeter(부하테스트)와 AOP Execution Timer(실행시간 측정) 도입<br> 
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ➡︎ 단계별로 향상된 성능과 실행 속도를 측정해 나감. <br>
+👉 https://www.notion.so/STEP1-fad9129c662e44859f1ff7d4df0dd75f
 <br><br>
 
-(2)  형태소 분석 라이브러리 변경<br>
-- 실행시간 측정을 위해 AOP Execution Timer 도입 <br>
-- Komoran의 설정을 light한 버전으로 해 주었다,
-- 결과 : 부하테스트 쓰레드 10배 정도 증가 가능(40 -> 450), 실행속도 1/10 (1.5초 -> 0.5초대로 개선)<br>
+(2) [STEP2]&nbsp;  형태소 분석 라이브러리의 설정 변경<br>
+- 문제 및 원인 : Komoran 라이브러리 자체의 실행속도가 느림. (실행 속도의 2/3이상을 차지) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;해당 라이브러리의 메모리 사용 문제. <br>
+- 해결 : 형태소 분석에 사용하는 설정을 변경함으로써 메모리 최적화.
+- 결과 : 부하테스트 쓰레드 10배 정도 증가 가능(40 -> 400)<br> 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;실행속도 1/10 (1.5초 -> 0.5초대로 개선)<br>
   👉 https://www.notion.so/STEP2-4bd04dd85a6e4edb9b5e8dc47f6fcc27
   <br><br>
-  (3) 키워드 검색시 쿼리 개선 (Query DSL 적용) <br>
-- 동적 쿼리와 fetch join을 통해 한 번에 키워드 조회
-- 동적 쿼리로 return 받은 타입이 List<Post>로 바뀌었으므로, for문 한 번으로 추가 가능.
-- 결과 : 부하테스트 쓰레드 700->2500d으로 증가, 실행시간은 400~500ms에서 300ms 정도로 단축됨.<br>
+  
+(3) [STEP3]&nbsp; 키워드 검색시 쿼리 개선 (Query DSL 적용) <br>
+- 문제 : 라이브러리를 light한 버전으로 바꾸었지만 느린 검색 속도 (500ms 정도)
+- 원인 : 키워드와 카테고리 검색 시, 비효율적인 쿼리문 (contain, join 등)
+- 해결 : 제목, 내용, 키워드마다 반복적으로 나가던 쿼리를 한 번의 동적 쿼리로 처리. 
+- 결과 : 부하테스트 쓰레드 700->2500으로 증가<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;실행시간은 400~500ms에서 300ms 정도로 단축됨.<br>
   👉 https://www.notion.so/STEP3-Query-DSL-939026377148406f93c7a571b767cd42
+<br>
 
-(4) 검색 결과 정렬 시 쿼리 개선 <br>
-- 관심도, 조회수, 댓글수, 생성일자 등 검색 결과 정렬 시 동적 쿼리로 한 번에 처리하는 방식 <br>
-- 페이징 추가 <br>
-- 결과 : 수행시간 100ms대 까지 감소 <br>
-  👉 추가예정
+(4) [STEP4]&nbsp; 검색 결과 정렬 시 쿼리 개선 <br>
+- 문제 및 원인 : 검색 필터 적용 시, 쿼리의 부적절한 사용 <br>
+- 해결 : ‘관심도, 조회수, 댓글수, 생성일자’ 등 검색 결과 정렬 시 동적쿼리로 한 번에 처리 (OrderSpecifier를 사용한 메서드) <br>
+- 결과 : 실행속도 200~300ms -> 100ms 이하로 단축<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 부하테스트 결과는 thread 2500정도로 비슷하게 유지.<br>
+  👉 https://www.notion.so/STEP4-Query-b142f6187b964433a73e4118458bc35c
   <br>
+  
+
 </div>
 </details>
 
@@ -179,8 +192,9 @@
 <div markdown="1">
     <br>
     (1) 편집 상태를 알고, 편집이 완료 되면 알림을 보내는 기능을 위해 API call 대신 다른 방식을 고민함. <br>
-    (2) SSE는 서버- 클라이언트의 단방향 통신으로 지속적인 연결을 통해,  서버의 데이터를 실시간으로 클라이언트로 보낸다는 점과 처음 한 번 맺은 HTTP 연결을 통해 서버는 클라이언트로 지속적으로 데이터 전송이 가능하다는 점에서 사용함. <br>
-   👉 링크 추가예정 <br>
+    (2) SSE는 서버- 클라이언트의 단방향 통신으로 지속적인 연결을 통해,  서버의 데이터를 실시간으로 클라이언트로 보낸다는 점과 <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;처음 한 번 맺은 HTTP 연결을 통해 서버는 클라이언트로 지속적으로 데이터 전송이 가능하다는 점에서 사용함. <br>
+   👉 https://www.notion.so/SSE-d46754926bdd4ba2a69be6a6e94405a2 <br>
 
 </div>
 </details>
@@ -192,7 +206,7 @@
     <br>
     (1) 아이디와 비밀번호를 잊었을 때 확인할 수 있는 인증코드를 발급받을 경우, 일정 시간동안 임시로 인증코드를 어떻게 유지할지 고민함. <br>
     (2) 임시 인증코드는 오래 저장할 필요가 없기도 하고, 중요하지 않은 데이터를 찾을 때 발생하는 시간과 부담을 줄이기 위해 Redis를 선택함. <br>
-        (Redis는 in-memory 형태로 운영중인 웹 서버에서 key-value 형태의 데이터 타입을 처리하고, I/O가 빈번히 발생할때 주로 사용한다는 점에서 도입함.)<br>
+   (In-memory 형태로 운영중인 웹 서버에서 I/O가 빈번히 발생할때 주로 사용한다는 점과 만료일을 지정하면 만료된 데이터는 캐시처럼 사라진다는 점에서 도입)<br>
     👉 https://www.notion.so/Redis-5f74e46c591d47108d4bf692b29ba3aa
 </div>
 </details>
@@ -202,6 +216,7 @@
 <summary> CI / CD </summary>
 <div markdown="1">
     <br>
+  
    - 문제 상황 : Github Actions 스크립트 파일 중 EC2 서버에서 Docker Image 실행 실패 에러.<br>
    - 원인 : SSH로 Knock EC2 서버를 연결하려 할 때 거부됨.<br>
    - 해결 : Github-Actions의 secrets의 key 설정을 pem.key와 ec2의 password 두 방법으로 해 보고 해결됨. <br>
@@ -210,7 +225,6 @@
 
 </div>
 </details>
-
 
 
 
